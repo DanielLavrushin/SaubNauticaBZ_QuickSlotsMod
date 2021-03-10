@@ -1,0 +1,21 @@
+{
+  "Id": "QuickSlotsMod",
+  "DisplayName": "Quick Slots",
+  "Author": "DanielLavrushin",
+  "Version": "1.3.0",
+  "Requires": [ "0Harmony.dll" ],
+  "Enable": true,
+  "AssemblyName": "QuickSlotsMod.dll",
+  "EntryMethod": "QuickSlotsMod.QPatch.Patch",
+  "Config": {
+    "SlotCount": 12,
+    "ShowInputText": true,
+    "Slot6Key": "6",
+    "Slot7Key": "7",
+    "Slot8Key": "8",
+    "Slot9Key": "9",
+    "Slot10Key": "0",
+    "Slot11Key": "-",
+    "Slot12Key": "="
+  }
+}
