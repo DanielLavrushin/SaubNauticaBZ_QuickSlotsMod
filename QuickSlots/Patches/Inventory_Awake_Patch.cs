@@ -17,13 +17,6 @@ namespace QuickSlotsMod.Patches
         {
             int slotCount = Mod.config.SlotCount;
 
-            string[] newSlotNames = new string[slotCount];
-            for (int i = 0; i < slotCount; ++i)
-            {
-                newSlotNames[i] = "QuickSlot" + i;
-            }
-            typeof(QuickSlots).GetField("slotNames", BindingFlags.Static | BindingFlags.NonPublic).SetValue(null, newSlotNames);
-
             Player player = __instance.GetComponent<Player>();
             QuickSlots newQuickSlots = new QuickSlots(__instance.gameObject, __instance.toolSocket, __instance.cameraSocket, __instance, player.rightHandSlot, slotCount);
 

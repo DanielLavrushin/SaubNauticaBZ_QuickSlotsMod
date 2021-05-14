@@ -92,9 +92,11 @@
     <Compile Include="Logger.cs" />
     <Compile Include="Mod.cs" />
     <Compile Include="Patches\Inventory_Awake_Patch.cs" />
+    <Compile Include="Patches\QuickSlots_SlotNames_Patch.cs" />
     <Compile Include="Patches\uGUI_QuickSlots_Init_Patch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utility\ImageUtils.cs" />
+    <Compile Include="Utility\NamesUtil.cs" />
     <Compile Include="Utility\SimpleJSON.cs" />
   </ItemGroup>
   <ItemGroup>
