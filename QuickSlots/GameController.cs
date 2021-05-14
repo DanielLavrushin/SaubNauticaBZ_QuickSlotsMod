@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-
+using QModManager.API;
 namespace QuickSlotsMod
 {
     public class GameController : MonoBehaviour
@@ -17,8 +17,8 @@ namespace QuickSlotsMod
 
         private void Awake()
         {
-            Logger.Log("GameController Added");
             quickSlots = GetComponent<uGUI_QuickSlots>();
+
         }
 
         private void OnDestroy()
@@ -42,11 +42,6 @@ namespace QuickSlotsMod
                         SelectQuickSlot(i);
                     }
                 }
-            }
-
-            if (tryAddLabels)
-            {
-                AddHotkeyLabels(quickSlots);
             }
         }
 

@@ -23,7 +23,7 @@ namespace QuickSlotsMod.Patches
             var setQuickSlots = __instance.GetType().GetMethod("set_quickSlots", BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
             setQuickSlots.Invoke(__instance, new object[] { newQuickSlots });
 
-            Logger.Log("Inventory Quick Modified, new slot count: {0}", __instance.quickSlots.slotCount);
+            Logger.Log("Quick Slots  Modified, new slot count: {0}", __instance.quickSlots.slotCount);
         }
     }
 }
