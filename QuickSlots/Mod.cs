@@ -22,7 +22,6 @@ namespace QuickSlotsMod
         public static void Load()
         {
             var harmony = new Harmony("subnautica.quickslotsmod.mod");
-            modDirectory = modDirectory ?? "SubnauticaZero_Data/Managed";
             LoadConfig();
 
             keys[5] = config.Slot6Key;
@@ -40,16 +39,17 @@ namespace QuickSlotsMod
 
         private static string GetModInfoPath()
         {
-            return Environment.CurrentDirectory + "/" + modDirectory + "/mod.json";
+            return new FileInfo(typeof(QuickSlotsMod.Mod).Assembly.Location).Directory.FullName + "/mod.json";
         }
 
         private static void LoadConfig()
         {
             string modInfoPath = GetModInfoPath();
-
+            Logger.Log("Config path " + modInfoPath);
             if (!File.Exists(modInfoPath))
             {
                 config = new Config();
+                Logger.Log("Unable to load config file from the path " + modInfoPath);
                 return;
             }
 
@@ -61,8 +61,6 @@ namespace QuickSlotsMod
 
         private static void ValidateConfig()
         {
-            Debug.Log("Debug: ValidateConfig");
-            Console.WriteLine("ValidateConfig");
             Config defaultConfig = new Config();
             if (config == null)
             {
