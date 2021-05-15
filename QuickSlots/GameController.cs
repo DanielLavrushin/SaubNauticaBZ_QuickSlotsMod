@@ -18,7 +18,7 @@ namespace QuickSlotsMod
         private void Awake()
         {
             quickSlots = GetComponent<uGUI_QuickSlots>();
-
+            AddHotkeyLabels(quickSlots);
         }
 
         private void OnDestroy()
