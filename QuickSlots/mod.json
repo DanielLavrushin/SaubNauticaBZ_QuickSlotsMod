@@ -2,21 +2,10 @@
   "Id": "QuickSlotsMod_BZ",
   "DisplayName": "Quick Slots",
   "Author": "DanielLavrushin",
-  "Version": "1.5.0",
+  "Version": "2.0.0",
   "Requires": [ "0Harmony.dll" ],
   "Enable": true,
   "AssemblyName": "QuickSlots.dll",
   "EntryMethod": "QuickSlotsMod.Mod.Load",
-  "Game": "BelowZero",
-  "Config": {
-    "SlotCount": 12,
-    "ShowInputText": true,
-    "Slot6Key": "6",
-    "Slot7Key": "7",
-    "Slot8Key": "8",
-    "Slot9Key": "9",
-    "Slot10Key": "0",
-    "Slot11Key": "-",
-    "Slot12Key": "="
-  }
+  "Game": "BelowZero"
 }

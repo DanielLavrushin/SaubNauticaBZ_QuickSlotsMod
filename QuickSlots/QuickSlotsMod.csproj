@@ -91,7 +91,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Config.cs" />
-    <Compile Include="GameController.cs" />
+    <Compile Include="Main.cs" />
+    <Compile Include="Patches\uGUI_MainMenuOptions_SelectItem_Patch.cs" />
+    <Compile Include="Patches\uGUI_QuickSlots_Binding.cs" />
+    <Compile Include="Patches\uGUI_QuickSlots_Bindings.cs" />
+    <Compile Include="Patches\uGUI_QuickSlots_ConfigTab.cs" />
+    <Compile Include="QuickSlotsMod.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Mod.cs" />
     <Compile Include="Patches\Inventory_Awake_Patch.cs" />

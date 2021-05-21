@@ -6,45 +6,69 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using QModManager.API;
+using System.Linq;
+using System.Collections.Generic;
+using HarmonyLib;
+using QuickSlotsMod.Patches;
+
 namespace QuickSlotsMod
 {
-    public class GameController : MonoBehaviour
+    public class QuickSlotsMod : MonoBehaviour
     {
         private static FieldInfo uGUI_QuickSlots_icons = typeof(uGUI_QuickSlots).GetField("icons", BindingFlags.NonPublic | BindingFlags.Instance);
 
         private uGUI_QuickSlots quickSlots;
-        private bool tryAddLabels;
-
+        Dictionary<int, TextMeshProUGUI> texts;
+        GameInput.Device primaryDevice;
+        string pressedKey = string.Empty;
         private void Awake()
         {
+            texts = new Dictionary<int, TextMeshProUGUI>();
+            primaryDevice = GameInput.GetPrimaryDevice();
             quickSlots = GetComponent<uGUI_QuickSlots>();
+            AddHotkeyLabels(quickSlots);
+            Config.Instance.OnConfigSave += Instance_OnConfigSave;
+        }
+
+        private void Instance_OnConfigSave(object sender, EventArgs e)
+        {
             AddHotkeyLabels(quickSlots);
         }
 
         private void OnDestroy()
         {
-            Logger.Log("GameController Destroyed");
         }
 
         private void Update()
         {
-            if (uGUI.main == null || uGUI.main.loading.IsLoading)
+            if (uGUI.main == null || uGUI.main.loading.IsLoading || !IngameMenu.main.enabled)
             {
                 return;
             }
 
-            if (CanSetQuickSlots())
+            if (Input.anyKeyDown && CanSetQuickSlots())
             {
-                for (int i = Player.quickSlotButtonsCount; i < Mod.config.SlotCount; ++i)
+                for (int i = Player.quickSlotButtonsCount; i < Mod.config.SlotCount; i++)
                 {
-                    if (Mod.GetKeyDownForSlot(i))
+                    if (GetKeyDownForSlot(i))
                     {
                         SelectQuickSlot(i);
                     }
                 }
             }
         }
-
+        public bool GetKeyDownForSlot(int slotID)
+        {
+            var primarySlot = GetInputForSlot(slotID);
+            var secondarySlot = GetInputForSlot(slotID, GameInput.BindingSet.Secondary);
+            return slotID >= Player.quickSlotButtonsCount && slotID < Mod.config.SlotCount &&
+               ((!string.IsNullOrWhiteSpace(primarySlot) && Input.GetKeyDown(uGUI_QuickSlots_ConfigTab.inputsMapping[primarySlot])) || (!string.IsNullOrWhiteSpace(secondarySlot) && Input.GetKeyDown(uGUI_QuickSlots_ConfigTab.inputsMapping[secondarySlot])));
+        }
+        private void SelectQuickSlot(int slotID)
+        {
+            Inventory.main.quickSlots.SlotKeyDown(slotID);
+            pressedKey = string.Empty;
+        }
         private bool CanSetQuickSlots()
         {
             if (Inventory.main == null)
@@ -61,40 +85,55 @@ namespace QuickSlotsMod
             Player player = Player.main;
             return player != null && player.GetMode() != Player.Mode.Piloting && player.GetCanItemBeUsed();
         }
-
-        private void SelectQuickSlot(int slotID)
-        {
-            Inventory.main.quickSlots.SlotKeyDown(slotID);
-        }
-
         public void AddHotkeyLabels(uGUI_QuickSlots instance)
         {
-            if (instance == null || !Mod.config.ShowInputText)
-            {
-                tryAddLabels = true;
-                return;
-            }
-
             uGUI_ItemIcon[] icons = (uGUI_ItemIcon[])uGUI_QuickSlots_icons.GetValue(instance);
             if (icons == null || icons.Length == 0)
             {
-                tryAddLabels = true;
                 return;
             }
 
             var textPrefab = GetTextPrefab();
             if (textPrefab == null)
             {
-                tryAddLabels = true;
                 return;
             }
 
             for (int i = 0; i < icons.Length; ++i)
             {
-                uGUI_ItemIcon icon = icons[i];
-                var text = CreateNewText(textPrefab, icon.transform, Mod.GetInputForSlotFormatted(i), i);
+                var icon = icons[i];
+
+                var prevtext = icon.transform.GetComponentInChildren<TextMeshProUGUI>();
+                if (prevtext != null)
+                    prevtext.text = GetInputForSlotFormatted(i);
+                else
+                    CreateNewText(textPrefab, icon.transform, GetInputForSlotFormatted(i), i);
             }
-            tryAddLabels = false;
+        }
+        public static string GetInputForSlot(int slotID, GameInput.BindingSet binding = GameInput.BindingSet.Primary)
+        {
+            if (slotID < Player.quickSlotButtonsCount)
+            {
+                string inputName = GameInput.GetBindingName(GameInput.Button.Slot1 + slotID, binding);
+                string input = LanguageCache.GetButtonFormat("{0}", GameInput.Button.Slot1 + slotID);
+                return string.IsNullOrEmpty(inputName) ? string.Empty : input;
+            }
+            if (slotID < 0 || slotID >= Mod.config.SlotCount)
+            {
+                return string.Empty;
+            }
+            var key = Mod.config.Slots[slotID.ToString()][(int)binding];
+            return key;
+        }
+
+        public static string GetInputForSlotFormatted(int slotID)
+        {
+
+            var key = GetInputForSlot(slotID);
+            if (string.IsNullOrEmpty(key))
+                key = GetInputForSlot(slotID, GameInput.BindingSet.Secondary);
+
+            return $"<color=#ADF8FFFF>{key}</color>";
         }
 
         private static TextMeshProUGUI GetTextPrefab()

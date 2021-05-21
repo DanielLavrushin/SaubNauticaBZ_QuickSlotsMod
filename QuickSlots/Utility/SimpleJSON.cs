@@ -296,6 +296,12 @@ namespace Common.Utility
                         yield return D;
             }
         }
+        public virtual string ToString(JSONTextMode mode)
+        {
+            StringBuilder sb = new StringBuilder();
+            WriteToStringBuilder(sb, 0, 0, mode);
+            return sb.ToString();
+        }
 
         public override string ToString()
         {
