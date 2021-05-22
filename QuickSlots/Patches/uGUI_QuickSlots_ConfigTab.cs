@@ -19,8 +19,6 @@ namespace QuickSlotsMod.Patches
         int index = -1;
         List<uGUI_Bindings> bindings = new List<uGUI_Bindings>();
 
-
-
         void Awake()
         {
             var inputs = (IList)(typeof(GameInput).GetField("inputs", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null));
@@ -39,6 +37,7 @@ namespace QuickSlotsMod.Patches
         }
         public void OnEnable()
         {
+            Config.Load();
             optionsPanel = GetComponent<uGUI_OptionsPanel>();
             bindings = Traverse.Create(optionsPanel).Field("bindings").GetValue<List<uGUI_Bindings>>();
             isOpened = true;

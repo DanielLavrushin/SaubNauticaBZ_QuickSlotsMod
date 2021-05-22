@@ -28,20 +28,19 @@ namespace QuickSlotsMod
 
         private void Run()
         {
-            uGUI_OptionsPanel uGUI_OptionsPanel = IngameMenu.main.GetComponentsInChildren<uGUI_OptionsPanel>(includeInactive: true)
-                                                   .Where(x => x.name == "Options")
-                                                   .FirstOrDefault();
-            if ((bool)uGUI_OptionsPanel)
-            {
-                if (uGUI_MainMenuOptions_SelectItem_Patch.kbTabIndex > -1)
-                {
-                    if (uGUI_OptionsPanel.gameObject.GetComponent<uGUI_QuickSlots_ConfigTab>() == null)
-                    {
-                        var qsCongfig = uGUI_OptionsPanel.gameObject.AddComponent<uGUI_QuickSlots_ConfigTab>();
-                        qsCongfig.SetIndex(uGUI_MainMenuOptions_SelectItem_Patch.kbTabIndex);
-                    }
-                }
-            }
+            uGUI_OptionsPanel uGUI_OptionsPanel = IngameMenu.main.GetComponentsInChildren<uGUI_OptionsPanel>(includeInactive: true).Where(x => x.name == "Options").FirstOrDefault();
+         
+            //if ((bool)uGUI_OptionsPanel)
+            //{
+            //    if (uGUI_TabbedControlsPanel_SelectItem_Patch.kbTabIndex > -1)
+            //    {
+            //        if (uGUI_OptionsPanel.gameObject.GetComponent<uGUI_QuickSlots_ConfigTab>() == null)
+            //        {
+            //            var qsCongfig = uGUI_OptionsPanel.gameObject.AddComponent<uGUI_QuickSlots_ConfigTab>();
+            //            qsCongfig.SetIndex(uGUI_TabbedControlsPanel_SelectItem_Patch.kbTabIndex);
+            //        }
+            //    }
+            //}
         }
     }
 }

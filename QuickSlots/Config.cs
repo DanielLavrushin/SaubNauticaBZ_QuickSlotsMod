@@ -21,6 +21,8 @@ namespace QuickSlotsMod
             { "7", new[] {"8", "" } },
             { "8", new[] {"9", "" } },
             { "9", new[] {"0", "" } },
+            { "10", new[] {"", "" } },
+            { "11", new[] {"", "" } },
         };
         internal int SlotCount { get { return Player.quickSlotButtonsCount + (Slots?.Keys.Count ?? defaultSlots.Count); } }
         public Dictionary<string, string[]> Slots { get; set; }
@@ -44,6 +46,7 @@ namespace QuickSlotsMod
                 var a = h[v.Key] = new JSONArray();
                 h[v.Key].AsArray.Add(v.Key, v.Value?[0] ?? string.Empty);
                 h[v.Key].AsArray.Add(v.Key, v.Value?[1] ?? string.Empty);
+                h[v.Key].AsArray.Add(v.Key, v.Value?[2] ?? string.Empty);
             }
             File.WriteAllText(GetModInfoPath(), n.ToString(JSONTextMode.Indent));
             OnConfigSave?.Invoke(this, null);
@@ -52,7 +55,7 @@ namespace QuickSlotsMod
         {
             try
             {
-                _instance = new Config() { Slots = defaultSlots };
+                _instance = _instance ?? new Config() { Slots = defaultSlots };
                 var modInfoObject = JSON.Parse(File.ReadAllText(GetModInfoPath()));
 
                 if (modInfoObject["Slots"] != null)
@@ -60,7 +63,7 @@ namespace QuickSlotsMod
                     Instance.Slots = new Dictionary<string, string[]>();
                     foreach (var v in modInfoObject["Slots"])
                     {
-                        Instance.Slots[v.Key] = new[] { v.Value.AsArray[0]?.Value, v.Value.AsArray[1]?.Value };
+                        Instance.Slots[v.Key] = new[] { v.Value.AsArray[0]?.Value ?? string.Empty, v.Value.AsArray[1]?.Value ?? string.Empty, v.Value.AsArray[2]?.Value ?? string.Empty };
                     }
                 }
             }

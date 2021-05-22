@@ -2,6 +2,7 @@
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
+    <LangVersion>latest</LangVersion>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{0811F9D5-BE14-4235-9841-E6BA35D9103A}</ProjectGuid>
@@ -92,15 +93,20 @@
   <ItemGroup>
     <Compile Include="Config.cs" />
     <Compile Include="Main.cs" />
-    <Compile Include="Patches\uGUI_MainMenuOptions_SelectItem_Patch.cs" />
+    <Compile Include="Patches\QuickSlots_DeselectInternal_Patch.cs" />
+    <Compile Include="Patches\QuickSlots_SelectInternal_Patch.cs" />
+    <Compile Include="Patches\GameInput_Initialize_Patch.cs" />
+    <Compile Include="Patches\uGUI_TabbedControlsPanel_AddBindingOption_Patch.cs" />
+    <Compile Include="Patches\uGUI_TabbedControlsPanel_SelectItem_Patch.cs" />
     <Compile Include="Patches\uGUI_QuickSlots_Binding.cs" />
     <Compile Include="Patches\uGUI_QuickSlots_Bindings.cs" />
     <Compile Include="Patches\uGUI_QuickSlots_ConfigTab.cs" />
+    <Compile Include="Patches\uGUI_SetupDefaultKeyboardBindings_Init_Patch.cs" />
     <Compile Include="QuickSlotsMod.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Mod.cs" />
     <Compile Include="Patches\Inventory_Awake_Patch.cs" />
-    <Compile Include="Patches\QuickSlots_SlotNames_Patch.cs" />
+    <Compile Include="Patches\QuickSlots_Update_Patch.cs" />
     <Compile Include="Patches\uGUI_QuickSlots_Init_Patch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utility\ImageUtils.cs" />

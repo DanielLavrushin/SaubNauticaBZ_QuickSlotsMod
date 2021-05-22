@@ -10,6 +10,7 @@ using System.Linq;
 using System.Collections.Generic;
 using HarmonyLib;
 using QuickSlotsMod.Patches;
+using System.Text.RegularExpressions;
 
 namespace QuickSlotsMod
 {
@@ -17,17 +18,18 @@ namespace QuickSlotsMod
     {
         private static FieldInfo uGUI_QuickSlots_icons = typeof(uGUI_QuickSlots).GetField("icons", BindingFlags.NonPublic | BindingFlags.Instance);
 
+
         private uGUI_QuickSlots quickSlots;
         Dictionary<int, TextMeshProUGUI> texts;
         GameInput.Device primaryDevice;
         string pressedKey = string.Empty;
         private void Awake()
         {
+            Config.Instance.OnConfigSave += Instance_OnConfigSave;
             texts = new Dictionary<int, TextMeshProUGUI>();
             primaryDevice = GameInput.GetPrimaryDevice();
             quickSlots = GetComponent<uGUI_QuickSlots>();
             AddHotkeyLabels(quickSlots);
-            Config.Instance.OnConfigSave += Instance_OnConfigSave;
         }
 
         private void Instance_OnConfigSave(object sender, EventArgs e)
@@ -57,6 +59,8 @@ namespace QuickSlotsMod
                 }
             }
         }
+
+
         public bool GetKeyDownForSlot(int slotID)
         {
             var primarySlot = GetInputForSlot(slotID);
@@ -128,12 +132,86 @@ namespace QuickSlotsMod
 
         public static string GetInputForSlotFormatted(int slotID)
         {
+            var key = string.Empty;
+            if (slotID < Player.quickSlotButtonsCount)
+            {
+                key = GameInput.GetBindingName(GameInput.Button.Slot1 + slotID, GameInput.BindingSet.Primary) ?? GameInput.GetBindingName(GameInput.Button.Slot1 + slotID, GameInput.BindingSet.Secondary) ?? string.Empty;
+            }
+            else
+            {
+                key = GetInputForSlot(slotID);
+                if (string.IsNullOrEmpty(key))
+                    key = GetInputForSlot(slotID, GameInput.BindingSet.Secondary);
+            }
+            var r = Regex.Match(key, @">(.*?)<", RegexOptions.Singleline);
+            key = r.Success ? r.Groups[1].Value : key;
+            key = TryGetDefaultLabel(key);
 
-            var key = GetInputForSlot(slotID);
-            if (string.IsNullOrEmpty(key))
-                key = GetInputForSlot(slotID, GameInput.BindingSet.Secondary);
-
+            key = slotID >= Player.quickSlotButtonsCount && Mod.config.Slots[slotID.ToString()].Length > 2 && !string.IsNullOrWhiteSpace(Mod.config.Slots[slotID.ToString()][2]) ? Mod.config.Slots[slotID.ToString()][2] : key;
             return $"<color=#ADF8FFFF>{key}</color>";
+        }
+
+        internal static string TryGetDefaultLabel(string key)
+        {
+            KeyCode keyCode;
+            if (Enum.TryParse<KeyCode>(key, out keyCode))
+            {
+                key = keyCode switch
+                {
+                    KeyCode.Escape => "Esc",
+                    KeyCode.PageUp => "pUp",
+                    KeyCode.PageDown => "pDwn",
+                    KeyCode.Comma => ",",
+                    KeyCode.Colon => ":",
+                    KeyCode.Semicolon => ";",
+                    KeyCode.Quote => "'",
+                    KeyCode.DoubleQuote => "\"",
+                    KeyCode.KeypadEnter => "Ent",
+                    KeyCode.Return => "Ent",
+                    KeyCode.Delete => "Del",
+                    KeyCode.Insert => "Ins",
+                    KeyCode.Numlock => "NmLck",
+                    KeyCode.ScrollLock => "SrLck",
+                    KeyCode.Print => "Prnt",
+                    KeyCode.Keypad0 => "0",
+                    KeyCode.Keypad1 => "1",
+                    KeyCode.Keypad2 => "2",
+                    KeyCode.Keypad3 => "3",
+                    KeyCode.Keypad4 => "4",
+                    KeyCode.Keypad5 => "5",
+                    KeyCode.Keypad6 => "6",
+                    KeyCode.Keypad7 => "7",
+                    KeyCode.Keypad8 => "8",
+                    KeyCode.Keypad9 => "9",
+                    KeyCode.KeypadDivide => "/",
+                    KeyCode.KeypadEquals => "=",
+                    KeyCode.KeypadMinus => "-",
+                    KeyCode.Minus => "-",
+                    KeyCode.Plus => "+",
+                    KeyCode.KeypadPlus => "+",
+                    KeyCode.KeypadMultiply => "*",
+                    KeyCode.Asterisk => "*",
+                    KeyCode.Question => "?",
+                    KeyCode.DownArrow => "Dwn",
+                    KeyCode.UpArrow => "Up",
+                    KeyCode.LeftArrow => "Left",
+                    KeyCode.RightArrow => "Right",
+                    KeyCode.LeftAlt => "Alt",
+                    KeyCode.RightAlt => "Alt",
+                    KeyCode.LeftControl => "Ctrl",
+                    KeyCode.RightControl => "Ctrl",
+                    KeyCode.LeftShift => "Shft",
+                    KeyCode.RightShift => "Shft",
+                    KeyCode.LeftWindows => "Wnd",
+                    KeyCode.KeypadPeriod => ".",
+                    KeyCode.Period => ".",
+                    KeyCode.Underscore => "_",
+
+                    _ => key
+
+                };
+            }
+            return key;
         }
 
         private static TextMeshProUGUI GetTextPrefab()
@@ -173,6 +251,43 @@ namespace QuickSlotsMod
             text.raycastTarget = false;
 
             return text;
+        }
+
+        private static string GetShortName(KeyCode key)
+        {
+            switch (key)
+            {
+                case KeyCode.Escape:
+                    return "Esc";
+                case KeyCode.Equals:
+                    return "=";
+                case KeyCode.Comma:
+                    return ",";
+                case KeyCode.Colon:
+                    return ":";
+                case KeyCode.Semicolon:
+                    return ";";
+                case KeyCode.PageDown:
+                    return "PgDwn";
+                case KeyCode.PageUp:
+                    return "PgUp";
+                case KeyCode.Insert:
+                    return "Ins";
+                case KeyCode.KeypadEnter:
+                    return "Enter";
+                case KeyCode.Numlock:
+                    return "NmLck";
+                case KeyCode.Backslash:
+                    return "\\";
+                case KeyCode.Slash:
+                    return "/";
+                case KeyCode.ScrollLock:
+                    return "ScrLck";
+                case KeyCode.Print:
+                    return "Prnt";
+                default:
+                    return key.ToString();
+            }
         }
     }
 }
