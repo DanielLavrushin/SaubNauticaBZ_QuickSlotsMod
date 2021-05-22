@@ -253,41 +253,5 @@ namespace QuickSlotsMod
             return text;
         }
 
-        private static string GetShortName(KeyCode key)
-        {
-            switch (key)
-            {
-                case KeyCode.Escape:
-                    return "Esc";
-                case KeyCode.Equals:
-                    return "=";
-                case KeyCode.Comma:
-                    return ",";
-                case KeyCode.Colon:
-                    return ":";
-                case KeyCode.Semicolon:
-                    return ";";
-                case KeyCode.PageDown:
-                    return "PgDwn";
-                case KeyCode.PageUp:
-                    return "PgUp";
-                case KeyCode.Insert:
-                    return "Ins";
-                case KeyCode.KeypadEnter:
-                    return "Enter";
-                case KeyCode.Numlock:
-                    return "NmLck";
-                case KeyCode.Backslash:
-                    return "\\";
-                case KeyCode.Slash:
-                    return "/";
-                case KeyCode.ScrollLock:
-                    return "ScrLck";
-                case KeyCode.Print:
-                    return "Prnt";
-                default:
-                    return key.ToString();
-            }
-        }
     }
 }
